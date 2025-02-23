@@ -1,20 +1,14 @@
 ---
-- name: Ensure gpg is installed
-  apt:
-    name: gpg
-    state: present
-
-- name: add surface repo gpg key
-  get_url: 
-    dest: /etc/apt/trusted.gpg.d/linux-surface.gpg
-    url: https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
-    mode: '0644'
-
-- name: add surface repository
-  apt_repository:
-    repo: "deb [arch=amd64, signed-by=/etc/apt/trusted.gpg.d/linux-surface.gpg] https://pkg.surfacelinux.com/debian release main"
-    filename: surface
-    state: present
+- name: add surfacelinux repo
+  deb822_repository:
+    name: surfacelinux
+    types: deb
+    enabled: true
+    uris: https://pkg.surfacelinux.com/debian
+    suites: release
+    components: main
+    signed_by: https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
+    architectures: amd64
 
 - name: install surface kernel
   apt:  
