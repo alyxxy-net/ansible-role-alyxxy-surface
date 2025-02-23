@@ -10,6 +10,12 @@
     signed_by: https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
     architectures: amd64
 
+- name: update repositories
+  apt: 
+    update_cache: yes
+    upgrade: safe
+  changed_when: False
+
 - name: install surface kernel
   apt:  
     name: 
