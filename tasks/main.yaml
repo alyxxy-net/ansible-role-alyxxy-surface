@@ -5,14 +5,14 @@
     state: present
 
 - name: add surface repo gpg key
-  apt_key: 
-    state: present
-    keyring: /etc/apt/trusted.gpg.d/linux-surface.gpg
+  get_url: 
+    dest: /etc/apt/trusted.gpg.d/linux-surface.gpg
     url: https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
+    mode: '0644'
 
 - name: add surface repository
   apt_repository:
-    repo: "deb [arch=amd64] https://pkg.surfacelinux.com/debian release main"
+    repo: "deb [arch=amd64, signed-by=/etc/apt/trusted.gpg.d/linux-surface.gpg] https://pkg.surfacelinux.com/debian release main"
     filename: surface
     state: present
 
