@@ -1,0 +1,47 @@
+---
+- name: Ensure gpg is installed
+  apt:
+    name: gpg
+    state: present
+
+- name: add surface repo gpg key
+  apt_key: 
+    state: present
+    keyring: /etc/apt/trusted.gpg.d/linux-surface.gpg
+    url: https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/keys/surface.asc
+
+- name: add surface repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://pkg.surfacelinux.com/debian release main"
+    filename: surface
+    state: present
+
+- name: install surface kernel
+  apt:  
+    name: 
+      - linux-image-surface
+      - linux-headers-surface
+    state: latest
+
+- name: install extra surface apps
+  apt:  
+    name: 
+      - iptsd
+      - surface-control
+      - surface-dtx-daemon
+      - libwacom-surface
+    state: latest
+
+- name: enable iptsd@dev-hidraw0.service
+  systemd:
+    name: 'iptsd@dev-hidraw0.service'
+    enabled: yes
+
+- name: enable surface-dtx-daemon service for main user
+  file:
+    src: /usr/lib/systemd/user/surface-dtx-userd.service
+    path: "/home/{{ user }}/.config/systemd/user/default.target.wants/surface-dtx-userd.service"
+    state: link
+    owner: "{{ user }}"
+    group: users
+
